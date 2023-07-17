@@ -1,0 +1,16 @@
+postgres:
+	docker run --name postgres15 -p 5432:5432 -e POSTGRES_DB=mydb -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=mypassword -d postgres:15-alpine
+
+createdb:
+	docker exec -it postgres15 createdb --username=myuser --owner=myuser mydb
+
+dropdb:
+	docker exec -it postgres15 dropdb mydb
+
+migrateup:
+	migrate -path db/migration -database "postgresql://myuser:mypassword@localhost:5432/mydb?sslmode=disable" -verbose up
+
+migratedown:
+	migrate -path db/migration -database "postgresql://myuser:mypassword@localhost:5432/mydb?sslmode=disable" -verbose down
+
+.PHONY: postgres createdb dropdb migrateup migratedown
