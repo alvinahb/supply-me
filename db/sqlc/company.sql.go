@@ -11,26 +11,24 @@ import (
 
 const createCompany = `-- name: CreateCompany :one
 INSERT INTO companies (
-    company_type, company_name, owner
+    company_type, company_name
 ) VALUES (
-    $1, $2, $3
-) RETURNING id, company_type, company_name, owner, created_at
+    $1, $2
+) RETURNING id, company_type, company_name, created_at
 `
 
 type CreateCompanyParams struct {
 	CompanyType string
 	CompanyName string
-	Owner       int64
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
-	row := q.db.QueryRowContext(ctx, createCompany, arg.CompanyType, arg.CompanyName, arg.Owner)
+	row := q.db.QueryRowContext(ctx, createCompany, arg.CompanyType, arg.CompanyName)
 	var i Company
 	err := row.Scan(
 		&i.ID,
 		&i.CompanyType,
 		&i.CompanyName,
-		&i.Owner,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -46,7 +44,7 @@ func (q *Queries) DeleteCompany(ctx context.Context, id int64) error {
 }
 
 const getCompany = `-- name: GetCompany :one
-SELECT id, company_type, company_name, owner, created_at FROM companies WHERE id = $1 LIMIT 1
+SELECT id, company_type, company_name, created_at FROM companies WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetCompany(ctx context.Context, id int64) (Company, error) {
@@ -56,14 +54,13 @@ func (q *Queries) GetCompany(ctx context.Context, id int64) (Company, error) {
 		&i.ID,
 		&i.CompanyType,
 		&i.CompanyName,
-		&i.Owner,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listCompanies = `-- name: ListCompanies :many
-SELECT id, company_type, company_name, owner, created_at FROM companies ORDER BY id LIMIT $1 OFFSET $2
+SELECT id, company_type, company_name, created_at FROM companies ORDER BY id LIMIT $1 OFFSET $2
 `
 
 type ListCompaniesParams struct {
@@ -84,7 +81,6 @@ func (q *Queries) ListCompanies(ctx context.Context, arg ListCompaniesParams) ([
 			&i.ID,
 			&i.CompanyType,
 			&i.CompanyName,
-			&i.Owner,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -100,8 +96,9 @@ func (q *Queries) ListCompanies(ctx context.Context, arg ListCompaniesParams) ([
 	return items, nil
 }
 
-const updateCompany = `-- name: UpdateCompany :exec
+const updateCompany = `-- name: UpdateCompany :one
 UPDATE companies SET company_name = $1 WHERE id = $2
+RETURNING id, company_type, company_name, created_at
 `
 
 type UpdateCompanyParams struct {
@@ -109,7 +106,14 @@ type UpdateCompanyParams struct {
 	ID          int64
 }
 
-func (q *Queries) UpdateCompany(ctx context.Context, arg UpdateCompanyParams) error {
-	_, err := q.db.ExecContext(ctx, updateCompany, arg.CompanyName, arg.ID)
-	return err
+func (q *Queries) UpdateCompany(ctx context.Context, arg UpdateCompanyParams) (Company, error) {
+	row := q.db.QueryRowContext(ctx, updateCompany, arg.CompanyName, arg.ID)
+	var i Company
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyType,
+		&i.CompanyName,
+		&i.CreatedAt,
+	)
+	return i, err
 }

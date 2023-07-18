@@ -14,7 +14,6 @@ CREATE TABLE "companies" (
   "id" bigserial PRIMARY KEY,
   "company_type" varchar NOT NULL,
   "company_name" varchar NOT NULL,
-  "owner" bigserial NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -48,8 +47,6 @@ CREATE INDEX ON "users" ("email");
 
 CREATE INDEX ON "companies" ("company_name");
 
-CREATE INDEX ON "companies" ("owner");
-
 CREATE INDEX ON "products" ("product_name");
 
 CREATE INDEX ON "products" ("product_name", "origin");
@@ -65,8 +62,6 @@ CREATE INDEX ON "orders" ("to_company_id");
 CREATE INDEX ON "orders" ("from_company_id", "to_company_id");
 
 ALTER TABLE "users" ADD FOREIGN KEY ("company") REFERENCES "companies" ("id");
-
-ALTER TABLE "companies" ADD FOREIGN KEY ("owner") REFERENCES "users" ("id");
 
 ALTER TABLE "entries" ADD FOREIGN KEY ("entity_id") REFERENCES "companies" ("id");
 

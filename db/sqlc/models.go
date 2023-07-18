@@ -13,7 +13,6 @@ type Company struct {
 	ID          int64
 	CompanyType string
 	CompanyName string
-	Owner       int64
 	CreatedAt   time.Time
 }
 
