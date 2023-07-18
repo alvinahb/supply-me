@@ -5,7 +5,7 @@ CREATE TABLE "users" (
   "email" varchar NOT NULL,
   "password" varchar NOT NULL,
   "company_id" bigserial NOT NULL,
-  "access_level" int NOT NULL,
+  "role" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -20,7 +20,7 @@ CREATE TABLE "companies" (
 CREATE TABLE "products" (
   "id" bigserial PRIMARY KEY,
   "product_name" varchar NOT NULL,
-  "origin" varchar NOT NULL,
+  "description" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -48,8 +48,6 @@ CREATE INDEX ON "users" ("email");
 CREATE INDEX ON "companies" ("company_name");
 
 CREATE INDEX ON "products" ("product_name");
-
-CREATE INDEX ON "products" ("product_name", "origin");
 
 CREATE INDEX ON "entries" ("company_id");
 

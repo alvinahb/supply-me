@@ -13,7 +13,7 @@ import (
 func CreateRandomProduct(t *testing.T) Product {
 	args := CreateProductParams{
 		ProductName: util.RandomString(15),
-		Origin:      util.RandomString(10),
+		Description: util.RandomString(100),
 	}
 
 	product, err := testQueries.CreateProduct(context.Background(), args)
@@ -21,7 +21,7 @@ func CreateRandomProduct(t *testing.T) Product {
 	require.NotEmpty(t, product)
 
 	require.Equal(t, args.ProductName, product.ProductName)
-	require.Equal(t, args.Origin, product.Origin)
+	require.Equal(t, args.Description, product.Description)
 
 	require.NotZero(t, product.ID)
 	require.NotZero(t, product.CreatedAt)
@@ -41,7 +41,7 @@ func TestGetProduct(t *testing.T) {
 
 	require.Equal(t, product1.ID, product2.ID)
 	require.Equal(t, product1.ProductName, product2.ProductName)
-	require.Equal(t, product1.Origin, product2.Origin)
+	require.Equal(t, product1.Description, product2.Description)
 	require.WithinDuration(t, product1.CreatedAt, product2.CreatedAt, time.Second)
 }
 
@@ -50,7 +50,7 @@ func TestUpdateProduct(t *testing.T) {
 
 	args := UpdateProductParams{
 		ProductName: util.RandomString(15),
-		Origin:      util.RandomString(10),
+		Description: util.RandomString(100),
 		ID:          product1.ID,
 	}
 
@@ -60,7 +60,7 @@ func TestUpdateProduct(t *testing.T) {
 
 	require.Equal(t, product1.ID, product2.ID)
 	require.Equal(t, args.ProductName, product2.ProductName)
-	require.Equal(t, args.Origin, product2.Origin)
+	require.Equal(t, args.Description, product2.Description)
 	require.WithinDuration(t, product1.CreatedAt, product2.CreatedAt, time.Second)
 }
 

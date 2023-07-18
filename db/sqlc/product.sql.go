@@ -11,24 +11,24 @@ import (
 
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO products (
-    product_name, origin
+    product_name, description
 ) VALUES (
     $1, $2
-) RETURNING id, product_name, origin, created_at
+) RETURNING id, product_name, description, created_at
 `
 
 type CreateProductParams struct {
 	ProductName string
-	Origin      string
+	Description string
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, createProduct, arg.ProductName, arg.Origin)
+	row := q.db.QueryRowContext(ctx, createProduct, arg.ProductName, arg.Description)
 	var i Product
 	err := row.Scan(
 		&i.ID,
 		&i.ProductName,
-		&i.Origin,
+		&i.Description,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -44,7 +44,7 @@ func (q *Queries) DeleteProduct(ctx context.Context, id int64) error {
 }
 
 const getProduct = `-- name: GetProduct :one
-SELECT id, product_name, origin, created_at FROM products WHERE id = $1 LIMIT 1
+SELECT id, product_name, description, created_at FROM products WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
@@ -53,14 +53,14 @@ func (q *Queries) GetProduct(ctx context.Context, id int64) (Product, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.ProductName,
-		&i.Origin,
+		&i.Description,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listProducts = `-- name: ListProducts :many
-SELECT id, product_name, origin, created_at FROM products ORDER BY id LIMIT $1 OFFSET $2
+SELECT id, product_name, description, created_at FROM products ORDER BY id LIMIT $1 OFFSET $2
 `
 
 type ListProductsParams struct {
@@ -80,7 +80,7 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 		if err := rows.Scan(
 			&i.ID,
 			&i.ProductName,
-			&i.Origin,
+			&i.Description,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -97,23 +97,23 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 }
 
 const updateProduct = `-- name: UpdateProduct :one
-UPDATE products SET product_name = $1, origin = $2 WHERE id = $3
-RETURNING id, product_name, origin, created_at
+UPDATE products SET product_name = $1, description = $2 WHERE id = $3
+RETURNING id, product_name, description, created_at
 `
 
 type UpdateProductParams struct {
 	ProductName string
-	Origin      string
+	Description string
 	ID          int64
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, updateProduct, arg.ProductName, arg.Origin, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateProduct, arg.ProductName, arg.Description, arg.ID)
 	var i Product
 	err := row.Scan(
 		&i.ID,
 		&i.ProductName,
-		&i.Origin,
+		&i.Description,
 		&i.CreatedAt,
 	)
 	return i, err

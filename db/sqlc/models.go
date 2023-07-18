@@ -35,18 +35,18 @@ type Order struct {
 type Product struct {
 	ID          int64
 	ProductName string
-	Origin      string
+	Description string
 	CreatedAt   time.Time
 }
 
 type User struct {
-	ID          int64
-	FirstName   string
-	LastName    string
-	Email       string
-	Password    string
-	CompanyID   int64
-	AccessLevel int32
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID        int64
+	FirstName string
+	LastName  string
+	Email     string
+	Password  string
+	CompanyID int64
+	Role      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

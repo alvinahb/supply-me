@@ -37,3 +37,11 @@ func RandomCompanyType() string {
 
 	return companyTypes[rand.Intn(n)]
 }
+
+// RandomCompanyType generates a random role among roles
+func RandomRole() string {
+	roles := []string{"Owner", "Employee"}
+	n := len(roles)
+
+	return roles[rand.Intn(n)]
+}
