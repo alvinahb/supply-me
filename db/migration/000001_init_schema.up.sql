@@ -41,6 +41,15 @@ CREATE TABLE "orders" (
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE "inventories" (
+  "id" bigserial PRIMARY KEY,
+  "company_id" bigserial NOT NULL,
+  "product_id" bigserial NOT NULL,
+  "amount_available" int NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now()),
+  "updated_at" timestamptz NOT NULL DEFAULT (now())
+);
+
 CREATE INDEX ON "users" ("first_name", "last_name");
 
 CREATE INDEX ON "users" ("email");
@@ -59,6 +68,10 @@ CREATE INDEX ON "orders" ("to_company_id");
 
 CREATE INDEX ON "orders" ("from_company_id", "to_company_id");
 
+CREATE INDEX ON "inventories" ("company_id");
+
+CREATE INDEX ON "inventories" ("company_id", "product_id");
+
 ALTER TABLE "users" ADD FOREIGN KEY ("company_id") REFERENCES "companies" ("id");
 
 ALTER TABLE "entries" ADD FOREIGN KEY ("company_id") REFERENCES "companies" ("id");
@@ -70,3 +83,7 @@ ALTER TABLE "orders" ADD FOREIGN KEY ("from_company_id") REFERENCES "companies" 
 ALTER TABLE "orders" ADD FOREIGN KEY ("to_company_id") REFERENCES "companies" ("id");
 
 ALTER TABLE "orders" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+
+ALTER TABLE "inventories" ADD FOREIGN KEY ("company_id") REFERENCES "companies" ("id");
+
+ALTER TABLE "inventories" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");

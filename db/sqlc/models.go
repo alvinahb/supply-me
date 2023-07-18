@@ -23,6 +23,15 @@ type Entry struct {
 	CreatedAt time.Time
 }
 
+type Inventory struct {
+	ID              int64
+	CompanyID       int64
+	ProductID       int64
+	AmountAvailable int32
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
+
 type Order struct {
 	ID            int64
 	FromCompanyID int64
