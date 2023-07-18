@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomCompany(t *testing.T) Company {
+func CreateRandomCompany(t *testing.T) Company {
 	args := CreateCompanyParams{
 		CompanyType: util.RandomCompanyType(),
-		CompanyName: util.RandomCompanyName(),
+		CompanyName: util.RandomString(20),
 	}
 
 	company, err := testQueries.CreateCompany(context.Background(), args)
@@ -30,11 +30,11 @@ func createRandomCompany(t *testing.T) Company {
 }
 
 func TestCreateCompany(t *testing.T) {
-	createRandomCompany(t)
+	CreateRandomCompany(t)
 }
 
 func TestGetCompany(t *testing.T) {
-	company1 := createRandomCompany(t)
+	company1 := CreateRandomCompany(t)
 	company2, err := testQueries.GetCompany(context.Background(), company1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, company2)
@@ -46,11 +46,11 @@ func TestGetCompany(t *testing.T) {
 }
 
 func TestUpdateCompany(t *testing.T) {
-	company1 := createRandomCompany(t)
+	company1 := CreateRandomCompany(t)
 
 	args := UpdateCompanyParams{
 		ID:          company1.ID,
-		CompanyName: util.RandomCompanyName(),
+		CompanyName: util.RandomString(20),
 	}
 
 	company2, err := testQueries.UpdateCompany(context.Background(), args)
@@ -64,7 +64,7 @@ func TestUpdateCompany(t *testing.T) {
 }
 
 func TestDeleteCompany(t *testing.T) {
-	company1 := createRandomCompany(t)
+	company1 := CreateRandomCompany(t)
 	err := testQueries.DeleteCompany(context.Background(), company1.ID)
 	require.NoError(t, err)
 
@@ -76,7 +76,7 @@ func TestDeleteCompany(t *testing.T) {
 
 func TestListCompanies(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		createRandomCompany(t)
+		CreateRandomCompany(t)
 	}
 
 	args := ListCompaniesParams{

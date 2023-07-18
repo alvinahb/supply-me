@@ -30,11 +30,7 @@ func RandomString(n int) string {
 	return sb.String()
 }
 
-// RandomCompanyName generates a random company name
-func RandomCompanyName() string {
-	return RandomString(20)
-}
-
+// RandomCompanyType generates a random string among companies types
 func RandomCompanyType() string {
 	companyTypes := []string{"Restaurant", "Fournisseur"}
 	n := len(companyTypes)

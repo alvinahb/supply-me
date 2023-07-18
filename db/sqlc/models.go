@@ -5,7 +5,6 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -18,8 +17,8 @@ type Company struct {
 
 type Entry struct {
 	ID        int64
-	EntityID  sql.NullInt64
-	Product   sql.NullInt64
+	CompanyID int64
+	ProductID int64
 	Amount    int32
 	CreatedAt time.Time
 }
@@ -28,8 +27,8 @@ type Order struct {
 	ID            int64
 	FromCompanyID int64
 	ToCompanyID   int64
-	Product       int64
-	Amount        int64
+	ProductID     int64
+	Amount        int32
 	CreatedAt     time.Time
 }
 
@@ -46,7 +45,7 @@ type User struct {
 	LastName    string
 	Email       string
 	Password    string
-	Company     int64
+	CompanyID   int64
 	AccessLevel int32
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
