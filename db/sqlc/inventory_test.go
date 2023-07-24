@@ -103,3 +103,23 @@ func TestListInventories(t *testing.T) {
 		require.NotEmpty(t, inventory)
 	}
 }
+
+func TestGetCompanyProductInventory(t *testing.T) {
+	inventory1 := createRandomInventory(t)
+
+	args := GetCompanyProductInventoryParams{
+		CompanyID: inventory1.CompanyID,
+		ProductID: inventory1.ProductID,
+	}
+
+	inventory2, err := testQueries.GetCompanyProductInventory(context.Background(), args)
+	require.NoError(t, err)
+	require.NotEmpty(t, inventory2)
+
+	require.Equal(t, inventory1.ID, inventory2.ID)
+	require.Equal(t, inventory1.CompanyID, inventory2.CompanyID)
+	require.Equal(t, inventory1.ProductID, inventory2.ProductID)
+	require.Equal(t, inventory1.AmountAvailable, inventory2.AmountAvailable)
+	require.WithinDuration(t, inventory1.CreatedAt, inventory2.CreatedAt, time.Second)
+	require.WithinDuration(t, inventory1.UpdatedAt, inventory2.UpdatedAt, time.Second)
+}

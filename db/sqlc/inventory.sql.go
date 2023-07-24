@@ -9,6 +9,33 @@ import (
 	"context"
 )
 
+const addInventoryAmount = `-- name: AddInventoryAmount :one
+UPDATE inventories
+SET amount_available = amount_available + $1
+WHERE company_id = $2 AND product_id = $3
+RETURNING id, company_id, product_id, amount_available, created_at, updated_at
+`
+
+type AddInventoryAmountParams struct {
+	Amount    int32
+	CompanyID int64
+	ProductID int64
+}
+
+func (q *Queries) AddInventoryAmount(ctx context.Context, arg AddInventoryAmountParams) (Inventory, error) {
+	row := q.db.QueryRowContext(ctx, addInventoryAmount, arg.Amount, arg.CompanyID, arg.ProductID)
+	var i Inventory
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.ProductID,
+		&i.AmountAvailable,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createInventory = `-- name: CreateInventory :one
 INSERT INTO inventories (
     company_id, product_id, amount_available
@@ -46,6 +73,52 @@ func (q *Queries) DeleteInventory(ctx context.Context, id int64) error {
 	return err
 }
 
+const getCompanyProductInventory = `-- name: GetCompanyProductInventory :one
+SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM inventories WHERE company_id = $1 AND product_id = $2 LIMIT 1
+`
+
+type GetCompanyProductInventoryParams struct {
+	CompanyID int64
+	ProductID int64
+}
+
+func (q *Queries) GetCompanyProductInventory(ctx context.Context, arg GetCompanyProductInventoryParams) (Inventory, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyProductInventory, arg.CompanyID, arg.ProductID)
+	var i Inventory
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.ProductID,
+		&i.AmountAvailable,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getCompanyProductInventoryForUpdate = `-- name: GetCompanyProductInventoryForUpdate :one
+SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM inventories WHERE company_id = $1 AND product_id = $2 LIMIT 1 FOR NO KEY UPDATE
+`
+
+type GetCompanyProductInventoryForUpdateParams struct {
+	CompanyID int64
+	ProductID int64
+}
+
+func (q *Queries) GetCompanyProductInventoryForUpdate(ctx context.Context, arg GetCompanyProductInventoryForUpdateParams) (Inventory, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyProductInventoryForUpdate, arg.CompanyID, arg.ProductID)
+	var i Inventory
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.ProductID,
+		&i.AmountAvailable,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getInventory = `-- name: GetInventory :one
 SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM inventories WHERE id = $1 LIMIT 1
 `
@@ -62,6 +135,46 @@ func (q *Queries) GetInventory(ctx context.Context, id int64) (Inventory, error)
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const listCompanyInventories = `-- name: ListCompanyInventories :many
+SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM inventories WHERE company_id = $1 ORDER BY id LIMIT $2 OFFSET $3
+`
+
+type ListCompanyInventoriesParams struct {
+	CompanyID int64
+	Limit     int32
+	Offset    int32
+}
+
+func (q *Queries) ListCompanyInventories(ctx context.Context, arg ListCompanyInventoriesParams) ([]Inventory, error) {
+	rows, err := q.db.QueryContext(ctx, listCompanyInventories, arg.CompanyID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Inventory
+	for rows.Next() {
+		var i Inventory
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.ProductID,
+			&i.AmountAvailable,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listInventories = `-- name: ListInventories :many
