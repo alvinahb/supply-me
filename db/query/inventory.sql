@@ -19,17 +19,13 @@ RETURNING *;
 -- name: AddInventoryAmount :one
 UPDATE inventories
 SET amount_available = amount_available + sqlc.arg(amount)
-WHERE company_id = sqlc.arg(company_id) AND product_id = sqlc.arg(product_id)
-RETURNING *;
+WHERE id = sqlc.arg(id) RETURNING *;
 
 -- name: DeleteInventory :exec
 DELETE FROM inventories where id = $1;
 
 -- name: GetCompanyProductInventory :one
 SELECT * FROM inventories WHERE company_id = $1 AND product_id = $2 LIMIT 1;
-
--- name: GetCompanyProductInventoryForUpdate :one
-SELECT * FROM inventories WHERE company_id = $1 AND product_id = $2 LIMIT 1 FOR NO KEY UPDATE;
 
 -- name: ListCompanyInventories :many
 SELECT * FROM inventories WHERE company_id = $1 ORDER BY id LIMIT $2 OFFSET $3;

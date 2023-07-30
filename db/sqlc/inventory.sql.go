@@ -12,18 +12,16 @@ import (
 const addInventoryAmount = `-- name: AddInventoryAmount :one
 UPDATE inventories
 SET amount_available = amount_available + $1
-WHERE company_id = $2 AND product_id = $3
-RETURNING id, company_id, product_id, amount_available, created_at, updated_at
+WHERE id = $2 RETURNING id, company_id, product_id, amount_available, created_at, updated_at
 `
 
 type AddInventoryAmountParams struct {
-	Amount    int32
-	CompanyID int64
-	ProductID int64
+	Amount int32
+	ID     int64
 }
 
 func (q *Queries) AddInventoryAmount(ctx context.Context, arg AddInventoryAmountParams) (Inventory, error) {
-	row := q.db.QueryRowContext(ctx, addInventoryAmount, arg.Amount, arg.CompanyID, arg.ProductID)
+	row := q.db.QueryRowContext(ctx, addInventoryAmount, arg.Amount, arg.ID)
 	var i Inventory
 	err := row.Scan(
 		&i.ID,
@@ -84,29 +82,6 @@ type GetCompanyProductInventoryParams struct {
 
 func (q *Queries) GetCompanyProductInventory(ctx context.Context, arg GetCompanyProductInventoryParams) (Inventory, error) {
 	row := q.db.QueryRowContext(ctx, getCompanyProductInventory, arg.CompanyID, arg.ProductID)
-	var i Inventory
-	err := row.Scan(
-		&i.ID,
-		&i.CompanyID,
-		&i.ProductID,
-		&i.AmountAvailable,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
-const getCompanyProductInventoryForUpdate = `-- name: GetCompanyProductInventoryForUpdate :one
-SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM inventories WHERE company_id = $1 AND product_id = $2 LIMIT 1 FOR NO KEY UPDATE
-`
-
-type GetCompanyProductInventoryForUpdateParams struct {
-	CompanyID int64
-	ProductID int64
-}
-
-func (q *Queries) GetCompanyProductInventoryForUpdate(ctx context.Context, arg GetCompanyProductInventoryForUpdateParams) (Inventory, error) {
-	row := q.db.QueryRowContext(ctx, getCompanyProductInventoryForUpdate, arg.CompanyID, arg.ProductID)
 	var i Inventory
 	err := row.Scan(
 		&i.ID,

@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -76,7 +75,6 @@ func TestTransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		err := <-errs
-		fmt.Println(err)
 		require.NoError(t, err)
 
 		result := <-results
