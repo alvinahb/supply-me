@@ -11,17 +11,17 @@ import (
 )
 
 func CreateRandomProduct(t *testing.T) Product {
-	args := CreateProductParams{
+	arg := CreateProductParams{
 		ProductName: util.RandomString(15),
 		Description: util.RandomString(100),
 	}
 
-	product, err := testQueries.CreateProduct(context.Background(), args)
+	product, err := testQueries.CreateProduct(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, product)
 
-	require.Equal(t, args.ProductName, product.ProductName)
-	require.Equal(t, args.Description, product.Description)
+	require.Equal(t, arg.ProductName, product.ProductName)
+	require.Equal(t, arg.Description, product.Description)
 
 	require.NotZero(t, product.ID)
 	require.NotZero(t, product.CreatedAt)
@@ -48,19 +48,19 @@ func TestGetProduct(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 	product1 := CreateRandomProduct(t)
 
-	args := UpdateProductParams{
+	arg := UpdateProductParams{
 		ProductName: util.RandomString(15),
 		Description: util.RandomString(100),
 		ID:          product1.ID,
 	}
 
-	product2, err := testQueries.UpdateProduct(context.Background(), args)
+	product2, err := testQueries.UpdateProduct(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, product2)
 
 	require.Equal(t, product1.ID, product2.ID)
-	require.Equal(t, args.ProductName, product2.ProductName)
-	require.Equal(t, args.Description, product2.Description)
+	require.Equal(t, arg.ProductName, product2.ProductName)
+	require.Equal(t, arg.Description, product2.Description)
 	require.WithinDuration(t, product1.CreatedAt, product2.CreatedAt, time.Second)
 }
 
@@ -80,12 +80,12 @@ func TestListProducts(t *testing.T) {
 		CreateRandomProduct(t)
 	}
 
-	args := ListProductsParams{
+	arg := ListProductsParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	products, err := testQueries.ListProducts(context.Background(), args)
+	products, err := testQueries.ListProducts(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, products, 5)
 

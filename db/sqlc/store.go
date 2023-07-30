@@ -59,7 +59,7 @@ type OrderTxResult struct {
 // OrderTx performs a product order from a provider to a restaurant.
 // It creates an order record, add company entries and update companies
 // inventories within a single database transaction
-func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxResult, error) {
+func (store *Store) OrderTx(ctx context.Context, arg OrderTxParams) (OrderTxResult, error) {
 	var result OrderTxResult
 
 	err := store.execTx(ctx, func(q *Queries) error {
@@ -67,10 +67,10 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 
 		// Create an order record
 		result.Order, err = q.CreateOrder(ctx, CreateOrderParams{
-			FromCompanyID: args.FromCompanyID,
-			ToCompanyID:   args.ToCompanyID,
-			ProductID:     args.ProductID,
-			Amount:        args.Amount,
+			FromCompanyID: arg.FromCompanyID,
+			ToCompanyID:   arg.ToCompanyID,
+			ProductID:     arg.ProductID,
+			Amount:        arg.Amount,
 		})
 		if err != nil {
 			return err
@@ -78,9 +78,9 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 
 		// Create an entry for the provider
 		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
-			CompanyID: args.FromCompanyID,
-			ProductID: args.ProductID,
-			Amount:    -args.Amount,
+			CompanyID: arg.FromCompanyID,
+			ProductID: arg.ProductID,
+			Amount:    -arg.Amount,
 		})
 		if err != nil {
 			return err
@@ -88,9 +88,9 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 
 		// Create an entry for the restaurant
 		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
-			CompanyID: args.ToCompanyID,
-			ProductID: args.ProductID,
-			Amount:    args.Amount,
+			CompanyID: arg.ToCompanyID,
+			ProductID: arg.ProductID,
+			Amount:    arg.Amount,
 		})
 		if err != nil {
 			return err
@@ -99,8 +99,8 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 		// Get provider inventory for the product
 		result.FromInventory, err = q.GetCompanyProductInventory(ctx,
 			GetCompanyProductInventoryParams{
-				CompanyID: args.FromCompanyID,
-				ProductID: args.ProductID,
+				CompanyID: arg.FromCompanyID,
+				ProductID: arg.ProductID,
 			})
 		if err != nil {
 			return err
@@ -110,15 +110,15 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 		// OR create it if not existing yet
 		result.ToInventory, err = q.GetCompanyProductInventory(ctx,
 			GetCompanyProductInventoryParams{
-				CompanyID: args.ToCompanyID,
-				ProductID: args.ProductID,
+				CompanyID: arg.ToCompanyID,
+				ProductID: arg.ProductID,
 			})
 		if err != nil {
 			if err == sql.ErrNoRows {
 				result.ToInventory, err = q.CreateInventory(ctx,
 					CreateInventoryParams{
-						CompanyID:       args.ToCompanyID,
-						ProductID:       args.ProductID,
+						CompanyID:       arg.ToCompanyID,
+						ProductID:       arg.ProductID,
 						AmountAvailable: int32(0),
 					})
 				if err != nil {
@@ -132,13 +132,13 @@ func (store *Store) OrderTx(ctx context.Context, args OrderTxParams) (OrderTxRes
 		// Ordering inventories transactions to avoid deadlocks
 		if result.FromInventory.ID < result.ToInventory.ID {
 			result.FromInventory, result.ToInventory, err = transferProduct(
-				ctx, q, result.FromInventory.ID, -args.Amount, result.ToInventory.ID, args.Amount)
+				ctx, q, result.FromInventory.ID, -arg.Amount, result.ToInventory.ID, arg.Amount)
 			if err != nil {
 				return err
 			}
 		} else {
 			result.ToInventory, result.FromInventory, err = transferProduct(
-				ctx, q, result.ToInventory.ID, args.Amount, result.FromInventory.ID, -args.Amount)
+				ctx, q, result.ToInventory.ID, arg.Amount, result.FromInventory.ID, -arg.Amount)
 			if err != nil {
 				return err
 			}

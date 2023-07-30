@@ -15,21 +15,21 @@ func createRandomOrder(t *testing.T) Order {
 	company2 := CreateRandomCompany(t)
 	product := CreateRandomProduct(t)
 
-	args := CreateOrderParams{
+	arg := CreateOrderParams{
 		FromCompanyID: company1.ID,
 		ToCompanyID:   company2.ID,
 		ProductID:     product.ID,
 		Amount:        int32(util.RandomInt(1, 100)),
 	}
 
-	order, err := testQueries.CreateOrder(context.Background(), args)
+	order, err := testQueries.CreateOrder(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, order)
 
-	require.Equal(t, args.FromCompanyID, order.FromCompanyID)
-	require.Equal(t, args.ToCompanyID, order.ToCompanyID)
-	require.Equal(t, args.ProductID, order.ProductID)
-	require.Equal(t, args.Amount, order.Amount)
+	require.Equal(t, arg.FromCompanyID, order.FromCompanyID)
+	require.Equal(t, arg.ToCompanyID, order.ToCompanyID)
+	require.Equal(t, arg.ProductID, order.ProductID)
+	require.Equal(t, arg.Amount, order.Amount)
 
 	require.NotZero(t, order.ID)
 	require.NotZero(t, order.CreatedAt)
@@ -58,7 +58,7 @@ func TestGetOrder(t *testing.T) {
 func TestUpdateOrder(t *testing.T) {
 	order1 := createRandomOrder(t)
 
-	args := UpdateOrderParams{
+	arg := UpdateOrderParams{
 		FromCompanyID: order1.FromCompanyID,
 		ToCompanyID:   order1.ToCompanyID,
 		ProductID:     order1.ProductID,
@@ -66,15 +66,15 @@ func TestUpdateOrder(t *testing.T) {
 		ID:            order1.ID,
 	}
 
-	order2, err := testQueries.UpdateOrder(context.Background(), args)
+	order2, err := testQueries.UpdateOrder(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, order2)
 
 	require.Equal(t, order1.ID, order2.ID)
-	require.Equal(t, args.FromCompanyID, order2.FromCompanyID)
-	require.Equal(t, args.ToCompanyID, order2.ToCompanyID)
-	require.Equal(t, args.ProductID, order2.ProductID)
-	require.Equal(t, args.Amount, order2.Amount)
+	require.Equal(t, arg.FromCompanyID, order2.FromCompanyID)
+	require.Equal(t, arg.ToCompanyID, order2.ToCompanyID)
+	require.Equal(t, arg.ProductID, order2.ProductID)
+	require.Equal(t, arg.Amount, order2.Amount)
 	require.WithinDuration(t, order1.CreatedAt, order2.CreatedAt, time.Second)
 }
 
@@ -94,12 +94,12 @@ func TestListOrders(t *testing.T) {
 		createRandomOrder(t)
 	}
 
-	args := ListOrdersParams{
+	arg := ListOrdersParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	orders, err := testQueries.ListOrders(context.Background(), args)
+	orders, err := testQueries.ListOrders(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, orders, 5)
 

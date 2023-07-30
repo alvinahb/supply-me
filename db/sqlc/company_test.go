@@ -11,17 +11,17 @@ import (
 )
 
 func CreateRandomCompany(t *testing.T) Company {
-	args := CreateCompanyParams{
+	arg := CreateCompanyParams{
 		CompanyType: util.RandomCompanyType(),
 		CompanyName: util.RandomString(20),
 	}
 
-	company, err := testQueries.CreateCompany(context.Background(), args)
+	company, err := testQueries.CreateCompany(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, company)
 
-	require.Equal(t, args.CompanyType, company.CompanyType)
-	require.Equal(t, args.CompanyName, company.CompanyName)
+	require.Equal(t, arg.CompanyType, company.CompanyType)
+	require.Equal(t, arg.CompanyName, company.CompanyName)
 
 	require.NotZero(t, company.ID)
 	require.NotZero(t, company.CreatedAt)
@@ -48,18 +48,18 @@ func TestGetCompany(t *testing.T) {
 func TestUpdateCompany(t *testing.T) {
 	company1 := CreateRandomCompany(t)
 
-	args := UpdateCompanyParams{
+	arg := UpdateCompanyParams{
 		ID:          company1.ID,
 		CompanyName: util.RandomString(20),
 	}
 
-	company2, err := testQueries.UpdateCompany(context.Background(), args)
+	company2, err := testQueries.UpdateCompany(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, company2)
 
 	require.Equal(t, company1.ID, company2.ID)
 	require.Equal(t, company1.CompanyType, company2.CompanyType)
-	require.Equal(t, args.CompanyName, company2.CompanyName)
+	require.Equal(t, arg.CompanyName, company2.CompanyName)
 	require.WithinDuration(t, company1.CreatedAt, company2.CreatedAt, time.Second)
 }
 
@@ -79,12 +79,12 @@ func TestListCompanies(t *testing.T) {
 		CreateRandomCompany(t)
 	}
 
-	args := ListCompaniesParams{
+	arg := ListCompaniesParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	companies, err := testQueries.ListCompanies(context.Background(), args)
+	companies, err := testQueries.ListCompanies(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, companies, 5)
 

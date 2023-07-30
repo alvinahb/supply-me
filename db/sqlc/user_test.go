@@ -13,7 +13,7 @@ import (
 func createRandomUser(t *testing.T) User {
 	company := CreateRandomCompany(t)
 
-	args := CreateUserParams{
+	arg := CreateUserParams{
 		FirstName: util.RandomString(8),
 		LastName:  util.RandomString(8),
 		Email:     util.RandomString(20),
@@ -22,16 +22,16 @@ func createRandomUser(t *testing.T) User {
 		Role:      util.RandomRole(),
 	}
 
-	user, err := testQueries.CreateUser(context.Background(), args)
+	user, err := testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
 
-	require.Equal(t, args.FirstName, user.FirstName)
-	require.Equal(t, args.LastName, user.LastName)
-	require.Equal(t, args.Email, user.Email)
-	require.Equal(t, args.Password, user.Password)
-	require.Equal(t, args.CompanyID, user.CompanyID)
-	require.Equal(t, args.Role, user.Role)
+	require.Equal(t, arg.FirstName, user.FirstName)
+	require.Equal(t, arg.LastName, user.LastName)
+	require.Equal(t, arg.Email, user.Email)
+	require.Equal(t, arg.Password, user.Password)
+	require.Equal(t, arg.CompanyID, user.CompanyID)
+	require.Equal(t, arg.Role, user.Role)
 
 	require.NotZero(t, user.ID)
 	require.NotZero(t, user.CreatedAt)
@@ -64,7 +64,7 @@ func TestGetUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	user1 := createRandomUser(t)
 
-	args := UpdateUserParams{
+	arg := UpdateUserParams{
 		FirstName: util.RandomString(8),
 		LastName:  util.RandomString(8),
 		Email:     util.RandomString(20),
@@ -74,17 +74,17 @@ func TestUpdateUser(t *testing.T) {
 		ID:        user1.ID,
 	}
 
-	user2, err := testQueries.UpdateUser(context.Background(), args)
+	user2, err := testQueries.UpdateUser(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, user2)
 
 	require.Equal(t, user1.ID, user2.ID)
-	require.Equal(t, args.FirstName, user2.FirstName)
-	require.Equal(t, args.LastName, user2.LastName)
-	require.Equal(t, args.Email, user2.Email)
-	require.Equal(t, args.Password, user2.Password)
-	require.Equal(t, args.CompanyID, user2.CompanyID)
-	require.Equal(t, args.Role, user2.Role)
+	require.Equal(t, arg.FirstName, user2.FirstName)
+	require.Equal(t, arg.LastName, user2.LastName)
+	require.Equal(t, arg.Email, user2.Email)
+	require.Equal(t, arg.Password, user2.Password)
+	require.Equal(t, arg.CompanyID, user2.CompanyID)
+	require.Equal(t, arg.Role, user2.Role)
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
 }
 
@@ -104,12 +104,12 @@ func TestListUsers(t *testing.T) {
 		createRandomUser(t)
 	}
 
-	args := ListUsersParams{
+	arg := ListUsersParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	users, err := testQueries.ListUsers(context.Background(), args)
+	users, err := testQueries.ListUsers(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, users, 5)
 

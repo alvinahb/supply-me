@@ -14,19 +14,19 @@ func createRandomEntry(t *testing.T) Entry {
 	company := CreateRandomCompany(t)
 	product := CreateRandomProduct(t)
 
-	args := CreateEntryParams{
+	arg := CreateEntryParams{
 		CompanyID: company.ID,
 		ProductID: product.ID,
 		Amount:    int32(util.RandomInt(1, 100)),
 	}
 
-	entry, err := testQueries.CreateEntry(context.Background(), args)
+	entry, err := testQueries.CreateEntry(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry)
 
-	require.Equal(t, args.CompanyID, entry.CompanyID)
-	require.Equal(t, args.ProductID, entry.ProductID)
-	require.Equal(t, args.Amount, entry.Amount)
+	require.Equal(t, arg.CompanyID, entry.CompanyID)
+	require.Equal(t, arg.ProductID, entry.ProductID)
+	require.Equal(t, arg.Amount, entry.Amount)
 
 	require.NotZero(t, entry.ID)
 	require.NotZero(t, entry.CreatedAt)
@@ -53,21 +53,21 @@ func TestGetEntry(t *testing.T) {
 func TestUpdateEntry(t *testing.T) {
 	entry1 := createRandomEntry(t)
 
-	args := UpdateEntryParams{
+	arg := UpdateEntryParams{
 		CompanyID: entry1.CompanyID,
 		ProductID: entry1.ProductID,
 		Amount:    int32(util.RandomInt(1, 100)),
 		ID:        entry1.ID,
 	}
 
-	entry2, err := testQueries.UpdateEntry(context.Background(), args)
+	entry2, err := testQueries.UpdateEntry(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry2)
 
 	require.Equal(t, entry1.ID, entry2.ID)
-	require.Equal(t, args.CompanyID, entry2.CompanyID)
-	require.Equal(t, args.ProductID, entry2.ProductID)
-	require.Equal(t, args.Amount, entry2.Amount)
+	require.Equal(t, arg.CompanyID, entry2.CompanyID)
+	require.Equal(t, arg.ProductID, entry2.ProductID)
+	require.Equal(t, arg.Amount, entry2.Amount)
 	require.WithinDuration(t, entry1.CreatedAt, entry2.CreatedAt, time.Second)
 }
 
@@ -87,12 +87,12 @@ func TestListEntries(t *testing.T) {
 		createRandomEntry(t)
 	}
 
-	args := ListEntriesParams{
+	arg := ListEntriesParams{
 		Limit:  5,
 		Offset: 5,
 	}
 
-	entries, err := testQueries.ListEntries(context.Background(), args)
+	entries, err := testQueries.ListEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, entries, 5)
 
