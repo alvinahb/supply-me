@@ -8,6 +8,7 @@ This is the repository for my restaurant stock management project.
 - Built in Go version 1.20.4
 - Containerized using Docker 24.0.2
 - Data stored using PostgreSQL 15
+- Continuous integration with Github Actions
 
 ### Dependencies
 - Uses [sqlc](https://sqlc.dev/) to generate Go code from SQL
