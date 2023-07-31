@@ -18,8 +18,8 @@ INSERT INTO products (
 `
 
 type CreateProductParams struct {
-	ProductName string
-	Description string
+	ProductName string `json:"product_name"`
+	Description string `json:"description"`
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -64,8 +64,8 @@ SELECT id, product_name, description, created_at FROM products ORDER BY id LIMIT
 `
 
 type ListProductsParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]Product, error) {
@@ -74,7 +74,7 @@ func (q *Queries) ListProducts(ctx context.Context, arg ListProductsParams) ([]P
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Product
+	items := []Product{}
 	for rows.Next() {
 		var i Product
 		if err := rows.Scan(
@@ -102,9 +102,9 @@ RETURNING id, product_name, description, created_at
 `
 
 type UpdateProductParams struct {
-	ProductName string
-	Description string
-	ID          int64
+	ProductName string `json:"product_name"`
+	Description string `json:"description"`
+	ID          int64  `json:"id"`
 }
 
 func (q *Queries) UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error) {

@@ -18,8 +18,8 @@ INSERT INTO companies (
 `
 
 type CreateCompanyParams struct {
-	CompanyType string
-	CompanyName string
+	CompanyType string `json:"company_type"`
+	CompanyName string `json:"company_name"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
@@ -64,8 +64,8 @@ SELECT id, company_type, company_name, created_at FROM companies ORDER BY id LIM
 `
 
 type ListCompaniesParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListCompanies(ctx context.Context, arg ListCompaniesParams) ([]Company, error) {
@@ -74,7 +74,7 @@ func (q *Queries) ListCompanies(ctx context.Context, arg ListCompaniesParams) ([
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Company
+	items := []Company{}
 	for rows.Next() {
 		var i Company
 		if err := rows.Scan(
@@ -102,8 +102,8 @@ RETURNING id, company_type, company_name, created_at
 `
 
 type UpdateCompanyParams struct {
-	CompanyName string
-	ID          int64
+	CompanyName string `json:"company_name"`
+	ID          int64  `json:"id"`
 }
 
 func (q *Queries) UpdateCompany(ctx context.Context, arg UpdateCompanyParams) (Company, error) {

@@ -14,3 +14,4 @@ This is the repository for my restaurant stock management project.
 - Uses [sqlc](https://sqlc.dev/) to generate Go code from SQL
 - Uses [pq](https://github.com/lib/pq) postgres driver
 - Uses [testify](https://github.com/stretchr/testify) set of packages
+- Uses [Gin](https://github.com/gin-gonic/gin) web framework

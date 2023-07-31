@@ -16,8 +16,8 @@ WHERE id = $2 RETURNING id, company_id, product_id, amount_available, created_at
 `
 
 type AddInventoryAmountParams struct {
-	Amount int32
-	ID     int64
+	Amount int32 `json:"amount"`
+	ID     int64 `json:"id"`
 }
 
 func (q *Queries) AddInventoryAmount(ctx context.Context, arg AddInventoryAmountParams) (Inventory, error) {
@@ -43,9 +43,9 @@ INSERT INTO inventories (
 `
 
 type CreateInventoryParams struct {
-	CompanyID       int64
-	ProductID       int64
-	AmountAvailable int32
+	CompanyID       int64 `json:"company_id"`
+	ProductID       int64 `json:"product_id"`
+	AmountAvailable int32 `json:"amount_available"`
 }
 
 func (q *Queries) CreateInventory(ctx context.Context, arg CreateInventoryParams) (Inventory, error) {
@@ -76,8 +76,8 @@ SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM
 `
 
 type GetCompanyProductInventoryParams struct {
-	CompanyID int64
-	ProductID int64
+	CompanyID int64 `json:"company_id"`
+	ProductID int64 `json:"product_id"`
 }
 
 func (q *Queries) GetCompanyProductInventory(ctx context.Context, arg GetCompanyProductInventoryParams) (Inventory, error) {
@@ -117,9 +117,9 @@ SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM
 `
 
 type ListCompanyInventoriesParams struct {
-	CompanyID int64
-	Limit     int32
-	Offset    int32
+	CompanyID int64 `json:"company_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
 func (q *Queries) ListCompanyInventories(ctx context.Context, arg ListCompanyInventoriesParams) ([]Inventory, error) {
@@ -128,7 +128,7 @@ func (q *Queries) ListCompanyInventories(ctx context.Context, arg ListCompanyInv
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Inventory
+	items := []Inventory{}
 	for rows.Next() {
 		var i Inventory
 		if err := rows.Scan(
@@ -157,8 +157,8 @@ SELECT id, company_id, product_id, amount_available, created_at, updated_at FROM
 `
 
 type ListInventoriesParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListInventories(ctx context.Context, arg ListInventoriesParams) ([]Inventory, error) {
@@ -167,7 +167,7 @@ func (q *Queries) ListInventories(ctx context.Context, arg ListInventoriesParams
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Inventory
+	items := []Inventory{}
 	for rows.Next() {
 		var i Inventory
 		if err := rows.Scan(
@@ -198,10 +198,10 @@ RETURNING id, company_id, product_id, amount_available, created_at, updated_at
 `
 
 type UpdateInventoryParams struct {
-	CompanyID       int64
-	ProductID       int64
-	AmountAvailable int32
-	ID              int64
+	CompanyID       int64 `json:"company_id"`
+	ProductID       int64 `json:"product_id"`
+	AmountAvailable int32 `json:"amount_available"`
+	ID              int64 `json:"id"`
 }
 
 func (q *Queries) UpdateInventory(ctx context.Context, arg UpdateInventoryParams) (Inventory, error) {

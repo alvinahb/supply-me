@@ -9,53 +9,53 @@ import (
 )
 
 type Company struct {
-	ID          int64
-	CompanyType string
-	CompanyName string
-	CreatedAt   time.Time
+	ID          int64     `json:"id"`
+	CompanyType string    `json:"company_type"`
+	CompanyName string    `json:"company_name"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Entry struct {
-	ID        int64
-	CompanyID int64
-	ProductID int64
-	Amount    int32
-	CreatedAt time.Time
+	ID        int64     `json:"id"`
+	CompanyID int64     `json:"company_id"`
+	ProductID int64     `json:"product_id"`
+	Amount    int32     `json:"amount"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Inventory struct {
-	ID              int64
-	CompanyID       int64
-	ProductID       int64
-	AmountAvailable int32
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID              int64     `json:"id"`
+	CompanyID       int64     `json:"company_id"`
+	ProductID       int64     `json:"product_id"`
+	AmountAvailable int32     `json:"amount_available"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
 }
 
 type Order struct {
-	ID            int64
-	FromCompanyID int64
-	ToCompanyID   int64
-	ProductID     int64
-	Amount        int32
-	CreatedAt     time.Time
+	ID            int64     `json:"id"`
+	FromCompanyID int64     `json:"from_company_id"`
+	ToCompanyID   int64     `json:"to_company_id"`
+	ProductID     int64     `json:"product_id"`
+	Amount        int32     `json:"amount"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type Product struct {
-	ID          int64
-	ProductName string
-	Description string
-	CreatedAt   time.Time
+	ID          int64     `json:"id"`
+	ProductName string    `json:"product_name"`
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type User struct {
-	ID        int64
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
-	CompanyID int64
-	Role      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int64     `json:"id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CompanyID int64     `json:"company_id"`
+	Role      string    `json:"role"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

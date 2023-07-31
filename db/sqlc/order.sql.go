@@ -18,10 +18,10 @@ INSERT INTO orders (
 `
 
 type CreateOrderParams struct {
-	FromCompanyID int64
-	ToCompanyID   int64
-	ProductID     int64
-	Amount        int32
+	FromCompanyID int64 `json:"from_company_id"`
+	ToCompanyID   int64 `json:"to_company_id"`
+	ProductID     int64 `json:"product_id"`
+	Amount        int32 `json:"amount"`
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
@@ -75,8 +75,8 @@ SELECT id, from_company_id, to_company_id, product_id, amount, created_at FROM o
 `
 
 type ListOrdersParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order, error) {
@@ -85,7 +85,7 @@ func (q *Queries) ListOrders(ctx context.Context, arg ListOrdersParams) ([]Order
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Order
+	items := []Order{}
 	for rows.Next() {
 		var i Order
 		if err := rows.Scan(
@@ -117,11 +117,11 @@ RETURNING id, from_company_id, to_company_id, product_id, amount, created_at
 `
 
 type UpdateOrderParams struct {
-	FromCompanyID int64
-	ToCompanyID   int64
-	ProductID     int64
-	Amount        int32
-	ID            int64
+	FromCompanyID int64 `json:"from_company_id"`
+	ToCompanyID   int64 `json:"to_company_id"`
+	ProductID     int64 `json:"product_id"`
+	Amount        int32 `json:"amount"`
+	ID            int64 `json:"id"`
 }
 
 func (q *Queries) UpdateOrder(ctx context.Context, arg UpdateOrderParams) (Order, error) {

@@ -18,12 +18,12 @@ INSERT INTO users (
 `
 
 type CreateUserParams struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
-	CompanyID int64
-	Role      string
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	CompanyID int64  `json:"company_id"`
+	Role      string `json:"role"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -85,8 +85,8 @@ SELECT id, first_name, last_name, email, password, company_id, role, created_at,
 `
 
 type ListUsersParams struct {
-	Limit  int32
-	Offset int32
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
@@ -95,7 +95,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	items := []User{}
 	for rows.Next() {
 		var i User
 		if err := rows.Scan(
@@ -130,13 +130,13 @@ RETURNING id, first_name, last_name, email, password, company_id, role, created_
 `
 
 type UpdateUserParams struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
-	CompanyID int64
-	Role      string
-	ID        int64
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	CompanyID int64  `json:"company_id"`
+	Role      string `json:"role"`
+	ID        int64  `json:"id"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
