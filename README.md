@@ -16,3 +16,4 @@ This is the repository for my restaurant stock management project.
 - Uses [Testify](https://github.com/stretchr/testify) set of packages
 - Uses [Gin](https://github.com/gin-gonic/gin) web framework
 - Uses [Viper](https://github.com/spf13/viper) configuration solution
+- Uses [GoMock](https://github.com/golang/mock) mocking framework
