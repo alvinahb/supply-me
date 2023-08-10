@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTransferTx(t *testing.T) {
+func TestOrderTx(t *testing.T) {
 	store := NewStore(testDB)
 
 	company1 := CreateRandomCompany(t)
