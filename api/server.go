@@ -3,6 +3,8 @@ package api
 import (
 	db "github.com/alvinahb/supply-me/db/sqlc"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 // Server serves all HTTP requests for our application
@@ -15,6 +17,10 @@ type Server struct {
 func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("product_category", validProductCategory)
+	}
 
 	router.POST("/company", server.createCompany)
 	router.GET("/company/:id", server.getCompany)
