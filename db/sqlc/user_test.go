@@ -14,12 +14,12 @@ func createRandomUser(t *testing.T) User {
 	company := CreateRandomCompany(t)
 
 	arg := CreateUserParams{
-		FirstName: util.RandomString(8),
-		LastName:  util.RandomString(8),
-		Email:     util.RandomString(20),
-		Password:  util.RandomString(12),
-		CompanyID: company.ID,
-		Role:      util.RandomRole(),
+		FirstName:      util.RandomString(8),
+		LastName:       util.RandomString(8),
+		Email:          util.RandomString(20),
+		HashedPassword: util.RandomString(12),
+		CompanyID:      company.ID,
+		Role:           util.RandomRole(),
 	}
 
 	user, err := testQueries.CreateUser(context.Background(), arg)
@@ -29,7 +29,7 @@ func createRandomUser(t *testing.T) User {
 	require.Equal(t, arg.FirstName, user.FirstName)
 	require.Equal(t, arg.LastName, user.LastName)
 	require.Equal(t, arg.Email, user.Email)
-	require.Equal(t, arg.Password, user.Password)
+	require.Equal(t, arg.HashedPassword, user.HashedPassword)
 	require.Equal(t, arg.CompanyID, user.CompanyID)
 	require.Equal(t, arg.Role, user.Role)
 
@@ -54,7 +54,7 @@ func TestGetUser(t *testing.T) {
 	require.Equal(t, user1.FirstName, user2.FirstName)
 	require.Equal(t, user1.LastName, user2.LastName)
 	require.Equal(t, user1.Email, user2.Email)
-	require.Equal(t, user1.Password, user2.Password)
+	require.Equal(t, user1.HashedPassword, user2.HashedPassword)
 	require.Equal(t, user1.CompanyID, user2.CompanyID)
 	require.Equal(t, user1.Role, user2.Role)
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
@@ -65,13 +65,13 @@ func TestUpdateUser(t *testing.T) {
 	user1 := createRandomUser(t)
 
 	arg := UpdateUserParams{
-		FirstName: util.RandomString(8),
-		LastName:  util.RandomString(8),
-		Email:     util.RandomString(20),
-		Password:  util.RandomString(12),
-		CompanyID: user1.CompanyID,
-		Role:      util.RandomRole(),
-		ID:        user1.ID,
+		FirstName:      util.RandomString(8),
+		LastName:       util.RandomString(8),
+		Email:          util.RandomString(20),
+		HashedPassword: util.RandomString(12),
+		CompanyID:      user1.CompanyID,
+		Role:           util.RandomRole(),
+		ID:             user1.ID,
 	}
 
 	user2, err := testQueries.UpdateUser(context.Background(), arg)
@@ -82,7 +82,7 @@ func TestUpdateUser(t *testing.T) {
 	require.Equal(t, arg.FirstName, user2.FirstName)
 	require.Equal(t, arg.LastName, user2.LastName)
 	require.Equal(t, arg.Email, user2.Email)
-	require.Equal(t, arg.Password, user2.Password)
+	require.Equal(t, arg.HashedPassword, user2.HashedPassword)
 	require.Equal(t, arg.CompanyID, user2.CompanyID)
 	require.Equal(t, arg.Role, user2.Role)
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
